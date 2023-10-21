@@ -3,7 +3,6 @@
       {
         "src": "PalatePixels/wsgi.py",
         "use": "@vercel/python",
-        "python": "3.11"
       }
     ],
     "routes": [
