@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PalatePixels : Image-Based Recipe Retrieval System</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'WebApp/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="{% static 'WebApp/favicon.png' %}" type="image/x-icon">
+    <style>
+        /* Additional styles */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #up-image:focus {
+            outline: none;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #000 !important;
+        }
+
+        .main_content {
+            overflow: auto;
+            flex-grow: 1;
+        }
+
+        .title {
+            font-size: calc(1.5em + 1.5vw);
+            font-weight: bold;
+            text-align: center;
+            color: #fff !important;
+            background-color: #000 !important;
+            margin-top: 20px;
+            margin-bottom: 20px; /* Added this to separate from the logo */
+            padding: 10px;
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 10px 0;
+            display: block; /* Ensures the container is a block-level element */
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5em;
+            }
+            .logo-container {
+                display: none;
+            }
+
+            .logo {
+                max-width: 100%;
+                width: 27%;
+                display: block; /* Ensures the logo image is a block-level element, preventing inline spacing issues */
+                margin: 0 auto; /* Centers the image if it has a smaller width than its container */
+            }
+
+            .upload_button, .process_button {
+                display: block;
+                margin-bottom: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="blur-background" style="background-color: #000">
+    <div class="wrapper" style="background-color: #000;">
+        <div class="top-section" style="background-color: #000">
+            <h3 class="title">PalatePixels : Image-Based Recipe Retrieval System</h3>
+        </div>
+        <div class="logo-container">
+            <img class="logo" src="{% static 'WebApp/logo.png' %}" alt="Logo">
+        </div>
+
+        <div class="main_content">
+            <div class="image-upload-area">
+                <div class="uploaded-image-display" style="{% if uploaded_image %}display: block;{% else %}display: none;{% endif %}">
+                    <img id="up-image" src="data:image/png;base64,{{uploaded_image}}">
+                </div>
+                <div class="image_form">
+                    <form method="post" enctype="multipart/form-data" style="width: 100%;">
+                        {% csrf_token %}
+                        <label class="upload_button btn btn-primary btn-lg">
+                            Upload Image
+                            <input type="file" name="image" accept="image/*" id="id_image" onchange="showImage(this)">
+                        </label>&nbsp;&nbsp;&nbsp;
+                        <label class="upload_button btn btn-dark btn-lg">
+                            Take a Picture
+                            <input type="file" name="image" accept="image/*" capture="environment" id="cap_image" onchange="showImage(this)">
+                        </label><br><br>
+                        <button class="process_button btn btn-success btn-lg" type="submit">Get Recipe</button>
+                    </form>
+                </div>
+            </div>
+<br>
+            <div class="results-display-area">
+                {% if recipe_list_to_return %}
+                    <center><h5 style="color: #fff" onclick="display_more()">Here are some possible matches (Warning: might not be 100% accurate)</h5></center>
+                    {% for x in recipe_list_to_return %}
+                    <div class="recipe-card" style="border:1 px solid">
+                        <div class="first_section">
+                            <h2 style="color: #fff" class="recipe_name">{{ x.0 }}</h2><br><br>
+                            {% comment %} <div class="recipe-card-image-div">
+                                <img class="recipe-card-image" src="{% static '' %}{{x.1}}" alt="">
+                            </div> {% endcomment %}
+                            <h5 style="padding-inline: 5px;margin: 0;margin-top: 10px; color: #fff;">{{ x.2 }}<br>Cooking Time: {{ x.3 }}</h5>
+                        </div>
+                        <div class="second_section">
+                            <h3 style="padding-inline: 5px;color: #fff">Ingredients</h3>
+                            <p style="color: #fff" class="ing_dir_display_area">{{ x.4 }}</p>
+                        </div>
+                        <div class="third_section">
+                            <h3 style="padding-inline: 5px;color: #fff">Directions</h3>
+                            <p style="color: #fff" class="ing_dir_display_area">{{ x.5 }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% comment %} <center><h3 onclick="display_more()">Can't find what you're looking for? Click here to see more</h3></center> {% endcomment %}
+                {% endif %}
+            </div>
+            <div class="results-display-area" id="extra_results" style="display: none;">
+                {% if similar_recipe_list %}
+                    {% for x in similar_recipe_list %}
+                    <div class="recipe-card">
+                        <div class="first_section">
+                            <h3 class="recipe_name">{{ x.0 }}</h3>
+                            <div class="recipe-card-image-div">
+                                <img class="recipe-card-image" src="{% static '' %}{{x.1}}" alt="">
+                            </div>
+                            <h5 style="padding-inline: 5px;margin: 0;margin-top: 10px;">{{ x.2 }}<br>Cooking Time: {{ x.3 }}</h5>
+                        </div>
+                        <div class="second_section">
+                            <h4 style="padding-inline: 5px;">Ingredients</h4>
+                            <p class="ing_dir_display_area">{{ x.4 }}</p>
+                        </div>
+                        <div class="third_section">
+                            <h4 style="padding-inline: 5px;">Directions</h4>
+                            <p class="ing_dir_display_area">{{ x.5 }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <footer style = "background-color: #000" class="bottom-section">
+            <h5 style="margin-block: 5px;color: #fff">Visit <a href="https://imshaad.in/">www.imshaad.in</a>&nbsp;for more projects</h5>
+            <div class="link-images">
+                <a href="https://github.com/shaadclt"><img class="s_media_icon" src="{% static 'WebApp/icons/white.png' %}"></a>
+                <a href="https://www.linkedin.com/in/mohamedshaad/"><img class="s_media_icon" src="{% static 'WebApp/icons/linkedin.png' %}"></a>
+            </div>
+        </footer>
+    </div>
+    <script>
+        function display_more() {
+            var x = document.getElementById('extra_results');
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        function showImage(input) {
+            var imageDisplay = document.querySelector('.uploaded-image-display');
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('up-image').src = e.target.result;
+                    imageDisplay.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+django
+python 
+pillow
+django-environ
