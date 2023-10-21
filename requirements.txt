@@ -1,4 +1,4 @@
 Django>=3.2,<4.0
-Python==3.11 
+Python==3.11.0 
 pillow
 django-environ
