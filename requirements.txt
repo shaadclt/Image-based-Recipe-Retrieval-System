@@ -1,4 +1,4 @@
 django
-python 
+python>=3.10 
 pillow
 django-environ
