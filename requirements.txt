@@ -5,3 +5,4 @@ keras
 spicy
 numpy
 gunicorn
+tensorflow-cpu
