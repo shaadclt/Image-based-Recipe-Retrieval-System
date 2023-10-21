@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "PalatePixels/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "PalatePixels/wsgi.py"
+      }
+    ]
+}
