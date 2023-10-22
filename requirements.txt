@@ -1,8 +1,5 @@
-Django>=3.2,<4.0
+django
 pillow
 django-environ
-keras
-spicy
-numpy
-gunicorn
 tensorflow-cpu
+keras
