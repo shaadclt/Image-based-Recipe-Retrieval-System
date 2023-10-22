@@ -24,7 +24,7 @@ The scraped data is saved in a JSON file (`indian_recipes.json`) for later use. 
 
 ## Web Application
 
-The Web Application is a Django-based application that utilizes the encodings and scraped data to recognize recipes from user-uploaded images. It can also display detailed recipe information, including images, calories, cooking time, ingredients, and directions.
+The Web Application is a Django-based application that utilizes the encodings and scraped data to recognize recipes from user-uploaded images. It can also display detailed recipe information, including calories, cooking time, ingredients, and directions.
 
 To use the Web Application:
 
