@@ -8,9 +8,9 @@ from scipy.spatial.distance import cosine
 
 model = densenet.DenseNet201(include_top=False, weights='imagenet', input_shape=(256, 256, 3), pooling='avg', classes=1000)
 
-with open('D:/Data Science/Food-Image-to-Recipe-Converter-main/SeeFood/encodings.txt', 'rb') as fp:
+with open('D:/Data Science/Projects/Image-based Recipe Retrievel System/PalatePixels/encodings.txt', 'rb') as fp:
     enc_list = pickle.load(fp)
-with open('D:/Data Science/Food-Image-to-Recipe-Converter-main/SeeFood/enc_names.txt', 'rb') as fp:
+with open('D:/Data Science/Projects/Image-based Recipe Retrievel System/PalatePixels/enc_names.txt', 'rb') as fp:
     names_list = pickle.load(fp)
 
 
